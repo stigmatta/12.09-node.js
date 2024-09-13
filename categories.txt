@@ -1,0 +1,7 @@
+[
+    { "category": "Toys" },
+    { "category": "Electronics" },
+    { "category": "Home Appliances" },
+    { "category": "Clothing" },
+    { "category": "Books" }
+]
