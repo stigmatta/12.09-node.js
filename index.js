@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 var path = require('path');
+var logger = path.join(__dirname,'logger.txt');
 
 var port = 8080;
 var productsPath = path.join(__dirname, 'products.txt');
@@ -11,6 +12,16 @@ var categories = [];
 
 var categoriesRouter = express.Router();
 
+app.use(function(request, response,next){
+    var data = `Address : ${request.ip}; Time: ${new Date().toLocaleString()}; URL : ${request.url}\n`;
+
+    fs.appendFile(logger, data, function(err){
+        console.log('data wrote');
+    });
+
+    next();
+});
+
 fs.readFile(categoriesPath, 'utf8', (err, data) => {
     if (err) {
         console.error('Error reading categories file:', err);
@@ -18,7 +29,6 @@ fs.readFile(categoriesPath, 'utf8', (err, data) => {
     }
     try {
         categories = JSON.parse(data);
-        console.log(categories)
     } catch (parseError) {
         console.error('Error parsing categories JSON:', parseError);
     }
@@ -86,8 +96,8 @@ productsRouter.route("/:name")
         }
     });
 
-app.use("/products", productsRouter);
 
+app.use("/products", productsRouter);
 
 
 app.get('/', (req, res) => {
